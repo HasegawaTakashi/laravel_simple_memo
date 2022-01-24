@@ -43,4 +43,36 @@ class HomeController extends Controller
         // return redirect(route('home'));
         return action('HomeController@index');
     }
+
+    public function edit($id)
+    {
+        // メモデータを取得
+        $memos = Memo::select('memos.*')
+        ->where('user_id', '=', \Auth::id())
+        ->whereNull('deleted_at')
+        ->orderBy('updated_at', 'DESC') // DESC->降順 ASC->昇順
+        ->get();
+
+        $edit_memo = Memo::find($id);
+
+        return view('edit', compact('memos', 'edit_memo'));
+    }
+
+    public function update(Request $request)
+    {
+        $posts = $request->all();
+
+        Memo::where('id', $posts['memo_id'])->update(['content' => $posts['content']]);
+
+        return redirect(route('home'));
+    }
+
+    public function destroy(Request $request)
+    {
+        $posts = $request->all();
+
+        Memo::where('id', $posts['memo_id'])->update(['deleted_at' => date("Y-m-d H:i:s", time())]);
+
+        return redirect(route('home'));
+    }
 }
