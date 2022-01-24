@@ -37,12 +37,11 @@ class HomeController extends Controller
     public function store(Request $request)
     {
         $posts = $request->all();
-        // dump die -> メソッドの引数のとった値を質問して止める -> データ確認、デバック関数
-        // dd(\Auth::id());
 
         Memo::insert(['content' => $posts['content'], 'user_id' => \Auth::id()]);
 
-        return redirect(route('home'));
+        // return redirect(route('home'));
+        return action('HomeController@index');
     }
 
     public function edit($id)
