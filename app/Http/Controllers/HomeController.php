@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Memo;
+use App\Models\Tag;
+use App\Models\MemoTag;
+use DB;
 
 class HomeController extends Controller
 {
@@ -38,11 +41,25 @@ class HomeController extends Controller
     {
         $posts = $request->all();
 
-        Memo::insert(['content' => $posts['content'], 'user_id' => \Auth::id()]);
-
-        // return redirect(route('home'));
-        return action('HomeController@index');
+        // {{ トランザクション }}
+        DB::transaction(function() use($posts) {
+            // メモIDをインサートして取得
+            $memo_id = Memo::insertGetId(['content' => $posts['content'], 'user_id' => \Auth::id()]);
+            $tag_exists = Tag::where('user_id', '=', \Auth::id())->where('name', '=', $posts['new_tag'])->exists();
+            // 新規タグが入力されているかチェック
+            // 新規タグが既にtagsテーブルに存在するかチェック
+            if(!empty($posts['new_tag']) && !$tag_exists) {
+                // 新規タグが既に存在しなければ、tagsテーブルにインサート + IDを取得
+                $tag_id = Tag::insertGetId(['user_id' => \Auth::id(), 'name' => $posts['new_tag']]);
+                // memo_tagsにインサートしてメモとタグを紐づける
+                MemoTag::insert(['memo_id' => $memo_id, 'tag_id' => $tag_id]);
+            }
+        });
+        // {{ トランザクション終了 }}
+        return redirect(route('home'));
     }
+
+
 
     public function edit($id)
     {
