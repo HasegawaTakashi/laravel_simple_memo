@@ -14,7 +14,7 @@
         <input type="hidden" name="memo_id" value="{{$edit_memo['id']}}">
         <div class="form-group">
             <textarea class="form-control" name="content" rows="3" placeholder="ここにメモを入力">
-            {{$edit_memo['content']}}
+                {{$edit_memo['content']}}
             </textarea>
         </div>
         <button type="submit" class="btn btn-primary mt-3">更新</button>
