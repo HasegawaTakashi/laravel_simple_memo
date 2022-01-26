@@ -53,8 +53,10 @@ class HomeController extends Controller
                 MemoTag::insert(['memo_id' => $memo_id, 'tag_id' => $tag_id]);
             }
 
-            foreach($posts['tags'] as $tag) {
-                MemoTag::insert(['memo_id' => $memo_id, 'tag_id' => $tag]);
+            if (!empty($posts['tags'][0])) {
+                foreach ($posts['tags'] as $tag) {
+                    MemoTag::insert(['memo_id' => $memo_id, 'tag_id' => $tag]);
+                }
             }
         });
         // {{ トランザクション終了 }}
