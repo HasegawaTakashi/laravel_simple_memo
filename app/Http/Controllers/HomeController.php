@@ -27,14 +27,17 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // メモデータを取得
+        // {{メモデータを取得}}
         $memos = Memo::select('memos.*')
             ->where('user_id', '=', \Auth::id())
             ->whereNull('deleted_at')
-            ->orderBy('updated_at', 'DESC') // DESC->降順 ASC->昇順
+            ->orderBy('updated_at', 'DESC')
             ->get();
 
-        return view('create', compact('memos'));
+        // {{タグデータを取得}}
+        $tags = Tag::where('user_id', '=', \Auth::id())->whereNull('deleted_at')->orderBy('id', 'DESC')->get();
+
+        return view('create', compact('memos', 'tags'));
     }
 
     public function store(Request $request)
@@ -43,16 +46,15 @@ class HomeController extends Controller
 
         // {{ トランザクション }}
         DB::transaction(function() use($posts) {
-            // メモIDをインサートして取得
             $memo_id = Memo::insertGetId(['content' => $posts['content'], 'user_id' => \Auth::id()]);
             $tag_exists = Tag::where('user_id', '=', \Auth::id())->where('name', '=', $posts['new_tag'])->exists();
-            // 新規タグが入力されているかチェック
-            // 新規タグが既にtagsテーブルに存在するかチェック
             if(!empty($posts['new_tag']) && !$tag_exists) {
-                // 新規タグが既に存在しなければ、tagsテーブルにインサート + IDを取得
                 $tag_id = Tag::insertGetId(['user_id' => \Auth::id(), 'name' => $posts['new_tag']]);
-                // memo_tagsにインサートしてメモとタグを紐づける
                 MemoTag::insert(['memo_id' => $memo_id, 'tag_id' => $tag_id]);
+            }
+
+            foreach($posts['tags'] as $tag) {
+                MemoTag::insert(['memo_id' => $memo_id, 'tag_id' => $tag]);
             }
         });
         // {{ トランザクション終了 }}
@@ -63,11 +65,11 @@ class HomeController extends Controller
 
     public function edit($id)
     {
-        // メモデータを取得
+        // {{メモデータを取得}}
         $memos = Memo::select('memos.*')
         ->where('user_id', '=', \Auth::id())
         ->whereNull('deleted_at')
-        ->orderBy('updated_at', 'DESC') // DESC->降順 ASC->昇順
+        ->orderBy('updated_at', 'DESC')
         ->get();
 
         $edit_memo = Memo::find($id);
