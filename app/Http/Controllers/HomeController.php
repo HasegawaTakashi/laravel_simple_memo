@@ -36,6 +36,7 @@ class HomeController extends Controller
     public function store(Request $request)
     {
         $posts = $request->all();
+        $request->validate(['content' => 'required']);
 
         // {{ トランザクション }}
         DB::transaction(function () use ($posts) {
@@ -78,6 +79,7 @@ class HomeController extends Controller
     public function update(Request $request)
     {
         $posts = $request->all();
+        $request->validate(['content' => 'required']);
 
         DB::transaction(function() use($posts) {
             Memo::where('id', $posts['memo_id'])->update(['content' => $posts['content']]);

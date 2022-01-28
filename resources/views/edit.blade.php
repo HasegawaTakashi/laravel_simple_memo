@@ -17,6 +17,9 @@
             {{$edit_memo[0]['content']}}
             </textarea>
         </div>
+        @error('content')
+           <div class='alert alert-danger mt-2 mb-2'>メモ内容を入力してください</div>
+        @enderror
         @foreach($tags as $tag)
         <div class="form-check form-check-inline mb-3">
             <input type="checkbox" class="form-check-input" name="tags[]" id="{{$tag['id']}}" value="{{$tag['id']}}" {{in_array($tag['id'], $include_tags) ? 'checked' : ''}}>
