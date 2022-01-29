@@ -93,7 +93,7 @@
                 </div>
                 <div class="col-md-4 p-0">
                     <div class="card">
-                        <div class="card-header">メモ一覧</div>
+                        <div class="card-header">メモ一覧<a href="{{route('home')}}"><i class="fas fa-plus-circle m-1"></i></a></div>
                         <div class="card-body">
                             @foreach($memos as $memo)
                             <a href="/edit/{{$memo['id']}}" class="card-text d-block">{{$memo['content']}}</a>
