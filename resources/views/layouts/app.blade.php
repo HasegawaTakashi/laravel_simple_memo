@@ -20,6 +20,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
 </head>
 
 <body>
@@ -85,7 +86,7 @@
                         <div class="card-body">
                             <a href="/" class="card-text d-block">全て表示</a>
                             @foreach($tags as $tag)
-                                <a href="/?tag={{$tag['id']}}" class="card-text d-block">{{$tag['name']}}</a>
+                            <a href="/?tag={{$tag['id']}}" class="card-text d-block">{{$tag['name']}}</a>
                             @endforeach
                         </div>
                     </div>
